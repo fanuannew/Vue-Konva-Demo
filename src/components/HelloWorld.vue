@@ -1,9 +1,13 @@
 <template>
+<div>
   <v-stage ref="stage" :config="{
-      width: 400,
-      height: 200
-    }" @dragstart="handleDragstart"
-      @dragend="handleDragend">
+      width: 411,
+      height: 800
+    }" >
+    <v-layer :config="{name: 'layer',x: 0,y: 0,}">
+      <v-image :config="tableBottomBg"></v-image>
+      <v-image :config="coinTableImg"></v-image>
+    </v-layer>
     <v-layer ref="layer">
       <v-regular-polygon ref="hexagon" :config="{
           x: 200,
@@ -30,7 +34,10 @@
       opacity : 0.5
     }" />
   </v-layer>
+  
   </v-stage>
+  <BetListPopLayer @betListHide="betListHide" v-if="betListFlag"></BetListPopLayer>
+  </div>
 </template>
 
 <script>
@@ -49,7 +56,7 @@ export default {
       vm.$refs.hexagon
         .getStage()
         .setX(
-          amplitude * Math.sin(frame.time * 2 * Math.PI / period) + centerX
+          amplitude * Math.sin((frame.time * 2 * Math.PI) / period) + centerX
         );
     }, vm.$refs.layer.getStage());
 
@@ -67,6 +74,32 @@ export default {
       starComponent.config.shadowOffsetY = 15;
       starComponent.config.scaleX = starComponent.config.startScale * 1.2;
       starComponent.config.scaleY = starComponent.config.startScale * 1.2;
+    },
+    betListHide() {
+      //投注记录隐藏
+      this.betListFlag = false;
+    }
+  },
+  computed: {
+    tableBottomBg() {
+      let img = new Image();
+      img.src = "/static/img/bg_table_long-min.png";
+      return {
+        y: this.height,
+        width: 411,
+        height: 731,
+        image: img
+      };
+    },
+    coinTableImg() {
+      let img = new Image();
+      img.src = "/static/img/chips-min.png";
+      return {
+        y: 600,
+        width: 411,
+        height: 81,
+        image: img
+      };
     }
   }
 };
@@ -84,7 +117,7 @@ ul {
 }
 li {
   display: inline-block;
-  margin: 0 10px;
+  margin: 0 0px;
 }
 a {
   color: #42b983;
